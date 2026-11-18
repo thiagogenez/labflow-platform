@@ -1,0 +1,19 @@
+# Tool environment
+.venv/
+__pycache__/
+
+# Terraform working files and state (state can contain secrets)
+.terraform/
+*.tfstate
+*.tfstate.*
+*.tfplan
+crash.log
+
+# Generated credentials
+*.kubeconfig
+
+# Disposable outputs
+/artifacts/
+/reports/
+
+.DS_Store
