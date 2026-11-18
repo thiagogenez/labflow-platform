@@ -17,7 +17,8 @@ Planning is complete; implementation starts on 2026-11-19. This table is the sou
 | Quality gate (pre-commit hooks, commit-message checks, CI) | Configured locally, CI pending first run |
 | Local datacenter (Lima + KVM, Terraform, Ansible, kubeadm) | Planned |
 | Edge (HAProxy + keepalived VIP, MetalLB, Envoy Gateway, TLS) | Planned |
-| Data services (CloudNativePG, Valkey, RabbitMQ, Kafka) | Planned |
+| Data services (CloudNativePG, Valkey) | Planned |
+| Message brokers (Kafka, RabbitMQ, SNS + SQS) | Planned |
 | GitOps (Argo CD local/hybrid, Flux on AWS) | Planned |
 | Secrets and identity (Vault, External Secrets, RBAC personas, IRSA) | Planned |
 | Observability (Prometheus, Grafana, SLO burn-rate alerts) | Planned |
@@ -42,7 +43,7 @@ flowchart LR
     psp -. signed webhooks .-> payment
     order --> pg[(PostgreSQL<br/>CloudNativePG)]
     order --> valkey[(Valkey)]
-    order -->|outbox| broker{{RabbitMQ / Kafka<br/>SNS + SQS on AWS}}
+    order -->|outbox| broker{{One message broker<br/>RabbitMQ or Kafka<br/>or SNS + SQS on AWS}}
     payment -->|outbox| broker
     broker --> inventory
     broker --> email[email-worker]
@@ -58,6 +59,7 @@ flowchart LR
 | Provisioning | Terraform (libvirt) + Ansible | Terraform + Ansible | Terraform + Ansible + WireGuard |
 | CNI | Calico | Cilium | Calico |
 | Load balancing | HAProxy + keepalived VIP, MetalLB | AWS NLB via cloud-provider-aws | As local |
+| Messaging | Kafka or RabbitMQ (self-hosted) | SNS + SQS (native) | As local |
 | GitOps | Argo CD | Flux | Argo CD |
 | Runs | Most days | Short sessions, destroyed afterwards | Short sessions, destroyed afterwards |
 

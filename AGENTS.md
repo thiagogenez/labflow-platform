@@ -6,6 +6,7 @@ LabFlow Platform is a public Platform Engineering/SRE learning lab: a self-manag
 
 ## Working Agreement
 
+- When unsure about a decision, do not guess: run the `grilling` skill (rounds of numbered questions, each with a recommended answer) and wait for the learner's answers. Record settled decisions in `docs/decisions.md`.
 - Work one plan day at a time. For each step: explain the proposal, build it, verify it against the day's exit check, compare expected and observed behaviour, name the limitations, ask the day's interview questions, and wait before advancing.
 - Code, documentation and commit messages are in English. Teach in Portuguese. Interview drills (questions and the learner's answers) are in English.
 - The agent writes application code and infrastructure drafts. The learner runs the key commands and writes one small piece per day. Give the learner exactly one command per message, say what it should print, and wait for the output. Several read-only checks may go together.
@@ -38,7 +39,7 @@ Create directories when their plan day needs them:
 
 ```text
 terraform/local/   libvirt VMs inside the Lima hypervisor VM
-terraform/aws/     VPC, EC2, IAM, S3, budget
+terraform/aws/     VPC, EC2, IAM, S3, SNS, SQS, budget
 ansible/           node preparation, kubeadm, CNI, WireGuard
 deploy/            Helm values and Kustomize bases/overlays
 clusters/local/    Argo CD applications (local and hybrid)
@@ -55,9 +56,12 @@ docs/              plan, decisions, runbooks/, interview/, assets/
 
 ## Commits and Pull Requests
 
-- Commit only after the learner approves the message.
-- Conventional Commits, subject at most 72 characters. Write each body paragraph as one unwrapped line; GitHub wraps it. Never add `Co-authored-by` or any other attribution trailer. The commit-msg hooks enforce these rules locally and CI enforces them on pull requests.
-- Pull requests state what changed, how it was verified and what remains limited. Merge by rebase.
+These rules are identical in `labflow` and `labflow-platform`; change them in both.
+
+- Before every commit, documentation included, three fresh agents review the staged diff independently. They get the diff, both repositories' `AGENTS.md`, `labflow-platform/docs/plan.md` and `docs/decisions.md`, and may open any file the change refers to, but never the author's reasoning. Reviewer A checks correctness, consistency, duplication and reinvented wheels (official documentation, Context7); B checks over-engineering and bloat (`ponytail-review`); C checks security and operability (secrets, least privilege, failure handling, timeouts, resource limits, observability, rollback). Each does a second round that re-verifies its own findings and looks for misses. Findings raised by two or more reviewers are consensus. Present every finding to the learner with an apply/reject verdict and reason; a fix that changes logic gets one re-review, then goes to the learner.
+- The learner approves each commit message and pull request description. The agent then commits, pushes to a topic branch (never to `main`) and opens the pull request; the learner merges it with a merge commit titled by the pull request (no squash, no rebase). Prefer few, step-sized commits.
+- Conventional Commits, subject at most 72 characters. Write each body paragraph as one unwrapped line; GitHub wraps it. Never add `Co-authored-by`, "Generated with" or any other attribution line to commits or pull requests. The commit-msg hooks check the Conventional Commits header, the subject length and `Co-authored-by` trailers, and CI runs them on every pull-request commit; the remaining rules are checked in review.
+- Pull requests state what changed, how it was verified, what remains limited, and a Review section summarizing the findings and their resolution.
 
 ## Documentation
 
