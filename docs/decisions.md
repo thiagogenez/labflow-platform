@@ -9,17 +9,19 @@ Settled on 2026-11-18 while planning the reboot. Each line is a decision and its
 | D01 | Delete and recreate the repository; discard the previous domain-model work. | Force-pushing would keep old commits reachable through closed pull requests. |
 | D02 | Two repositories: `labflow` (application code, images) and `labflow-platform` (IaC, GitOps, docs). Linked by image-digest pull requests, not Git submodules. | Separate access, deploy without rebuild, no CI loops, a clean deploy history. Submodules couple versions at the Git level. |
 | D03 | One pre-commit configuration per repository, identical locally and in CI, with commit-message checks. | The editor, the hook and CI must reject the same things. |
-| D04 | Conventional Commits; subject at most 72 characters; unwrapped body paragraphs; no co-author trailers. | Clean, readable history in public portfolio repositories. |
-| D05 | The agent writes code and infrastructure drafts; the learner runs commands, writes one small piece per day and owns design calls. | Fifteen days are not enough to type everything by hand; running and breaking it is where the learning is. |
+| D04 | Conventional Commits; subject at most 72 characters; unwrapped body paragraphs; no co-author trailers or "Generated with" lines in commits and pull requests. Pull requests merge with a merge commit titled by the pull request; no squash, no rebase. | Clean, readable history in public portfolio repositories; signed commits stay intact and each pull request remains one revertible unit. |
+| D05 | The agent writes code and infrastructure drafts and, once the learner approves the text, commits, pushes topic branches and opens pull requests; the learner runs the key commands, writes one small piece per day, owns design calls and merges. | Fifteen days are not enough to type everything by hand; running and breaking it is where the learning is. |
 | D06 | README as portfolio: Mermaid diagrams, generated animated SVG with static fallback, honest status table. Docs live in `labflow-platform`. | The platform is the focus; animations stay sharp, small and theme-aware. |
 | D07 | Three interview questions per day in English; mock interview on Day 15. | Target: Senior Platform Engineer, SRE and Kubernetes roles, interviewed in English. |
+| D08 | Every commit passes three independent agent reviews (correctness and duplication; over-engineering; security and operability), two rounds each; findings are compared for consensus and the learner decides. | Clean, DRY, right-sized code in public repositories; independent reviewers catch different problems. |
+| D09 | When a decision is unclear, the agent runs the grilling skill instead of guessing. | Decisions stay with the learner and get recorded. |
 
 ## Application
 
 | ID | Decision | Why |
 | --- | --- | --- |
 | D10 | Thin but realistic application in Go (order-api, payment-api, inventory, psp-simulator) and Python (shipping-api, email-worker, analytics-worker), plus a static storefront. | Polyglot like real companies; Go on the hot path, Python for workers and data. |
-| D11 | One broker adapter per language with RabbitMQ, Kafka and SNS + SQS implementations. | Compare the brokers with the same code; SNS fanout to SQS mirrors the RabbitMQ exchange. |
+| D11 | One broker adapter per language (RabbitMQ, Kafka, SNS + SQS); one broker per deployment: Kafka and RabbitMQ stressed locally, native SNS + SQS on AWS. Reopened 2026-11-18: AWS moved from self-hosted brokers to native SNS + SQS. | Measure before choosing; publishing an event to two brokers only adds failure modes. |
 | D12 | Payments through `psp-simulator`, a black-box stand-in for Stripe: browser tokenization, idempotent charges, signed asynchronous webhooks that can arrive duplicated, late or out of order. | Real integrations work this way; card numbers never reach the backend. |
 | D13 | Refunds: full or per-item partial, within 30 days, idempotent, as a choreographed saga. | Real return flows; saga versus two-phase commit is a common interview topic. |
 | D14 | Shipping quotes from `shipping-api` with a timeout and a flat-rate fallback. | Exercise timeouts, retries, circuit breaking and graceful degradation. |
