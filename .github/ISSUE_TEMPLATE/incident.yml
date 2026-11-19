@@ -1,0 +1,41 @@
+name: Incident
+description: Unplanned disruption; open it during the incident and complete the blameless postmortem afterwards.
+labels: ["type: incident"]
+body:
+  - type: markdown
+    attributes:
+      value: This repository is public. Redact tokens, account IDs and personal data. Report security incidents, such as leaked credentials or a compromise, through a private security advisory instead.
+  - type: textarea
+    attributes:
+      label: Summary
+    validations:
+      required: true
+  - type: textarea
+    attributes:
+      label: Impact
+      description: What is affected, since when, and which SLOs are burning.
+    validations:
+      required: true
+  - type: textarea
+    attributes:
+      label: Detection
+      description: How the incident was noticed (alert, dashboard, user report) and when.
+    validations:
+      required: true
+  - type: textarea
+    attributes:
+      label: Timeline (UTC)
+  - type: textarea
+    attributes:
+      label: Root cause
+      description: Contributing factors in systems and processes, not people.
+  - type: textarea
+    attributes:
+      label: Resolution
+      description: How service was restored, and the runbook used or written.
+  - type: textarea
+    attributes:
+      label: Follow-up actions
+      description: One checkbox each; link the issues created for them.
+      value: |
+        - [ ]

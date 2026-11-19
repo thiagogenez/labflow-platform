@@ -1,0 +1,39 @@
+name: Feature
+description: A new capability or behaviour.
+labels: ["type: feature"]
+body:
+  - type: markdown
+    attributes:
+      value: This repository is public. Redact tokens, account IDs and personal data.
+  - type: textarea
+    attributes:
+      label: Context
+      description: Why this is needed. Link related decisions and issues.
+    validations:
+      required: true
+  - type: textarea
+    attributes:
+      label: Scope
+      description: What will be built or changed.
+    validations:
+      required: true
+  - type: textarea
+    attributes:
+      label: Acceptance criteria
+      description: Verifiable outcomes, one checkbox each.
+      placeholder: "- [ ] A verifiable outcome"
+    validations:
+      required: true
+  - type: textarea
+    attributes:
+      label: Out of scope
+  - type: textarea
+    attributes:
+      label: Risks
+      description: What could go wrong and the mitigation or fallback.
+  - type: textarea
+    attributes:
+      label: Verification
+      description: How the outcome will be demonstrated.
+    validations:
+      required: true

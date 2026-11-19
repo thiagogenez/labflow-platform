@@ -1,0 +1,41 @@
+name: Bug
+description: Behaviour that differs from what is specified.
+labels: ["type: bug"]
+body:
+  - type: markdown
+    attributes:
+      value: This repository is public. Redact tokens, account IDs and personal data.
+  - type: textarea
+    attributes:
+      label: Summary
+    validations:
+      required: true
+  - type: dropdown
+    attributes:
+      label: Environment
+      options:
+        - Docker Compose
+        - Local
+        - AWS
+        - Hybrid
+    validations:
+      required: true
+  - type: textarea
+    attributes:
+      label: Steps to reproduce
+    validations:
+      required: true
+  - type: textarea
+    attributes:
+      label: Expected behaviour
+    validations:
+      required: true
+  - type: textarea
+    attributes:
+      label: Actual behaviour
+    validations:
+      required: true
+  - type: textarea
+    attributes:
+      label: Evidence
+      description: Logs, metrics, traces or screenshots.

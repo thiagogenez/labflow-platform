@@ -14,7 +14,8 @@ Planning is complete; implementation starts on 2026-11-19. This table is the sou
 | Capability | Status |
 | --- | --- |
 | Plan and design decisions | Done |
-| Quality gate (pre-commit hooks, commit-message checks, CI) | Configured locally, CI pending first run |
+| Quality gate (pre-commit hooks, commit-message checks, CI) | Running in CI |
+| Contribution workflow (issue forms, pull request template, ticket references, pull request check) | Configured, CI pending first run |
 | Local datacenter (Lima + KVM, Terraform, Ansible, kubeadm) | Planned |
 | Edge (HAProxy + keepalived VIP, MetalLB, Envoy Gateway, TLS) | Planned |
 | Data services (CloudNativePG, Valkey) | Planned |
@@ -67,6 +68,7 @@ flowchart LR
 
 - [Plan](docs/plan.md): day-by-day milestones, exit checks and failure drills.
 - [Decisions](docs/decisions.md): what was decided, and why.
+- [Contributing](CONTRIBUTING.md): tickets, checks, reviews, commits and pull requests.
 
 ## License
 
