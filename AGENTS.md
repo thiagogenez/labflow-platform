@@ -2,7 +2,7 @@
 
 ## Purpose
 
-LabFlow Platform is a public Platform Engineering/SRE learning lab: a self-managed Kubernetes platform for the [LabFlow](https://github.com/thiagogenez/labflow) application in three scenarios (local, AWS, hybrid), operated through failures and bursts to prepare for Senior Platform Engineer, SRE and Kubernetes interviews. Read [the plan](docs/plan.md) and [the decisions](docs/decisions.md) before changing anything. Decisions recorded there are settled unless the learner reopens them.
+LabFlow Platform is a public Platform Engineering/SRE learning lab: a Kubernetes platform for the [LabFlow](https://github.com/thiagogenez/labflow) application in three scenarios (self-managed private, AWS managed services, hybrid), operated through failures and bursts to prepare for Senior Platform Engineer, SRE and Kubernetes interviews. Read [the plan](docs/plan.md) and [the decisions](docs/decisions.md) before changing anything. Decisions recorded there are settled unless the learner reopens them.
 
 ## Working Agreement
 
@@ -22,14 +22,14 @@ LabFlow Platform is a public Platform Engineering/SRE learning lab: a self-manag
 
 ## Safety and Cost
 
-- AWS: run `terraform apply` only after the learner approves that specific apply, and `terraform destroy` at the end of every session. Keep the budget alarm on. No NAT gateways.
-- No secrets in Git, logs, metrics or CI artifacts. Prefer workload identity (IRSA, GitHub OIDC) to long-lived keys. Keep the EC2 IMDS hop limit at 1.
+- AWS: deploy a CloudFormation change set only after the learner approves it; at the end of every session run the plan's session-exit procedure (Ingresses through Git first, then the session stacks; the retained `baseline` stack stays). Pass the learner's IP range at deploy time and never commit it. Keep the budget alerts on. One NAT gateway in total.
+- No secrets in Git, logs, metrics or CI artifacts. Prefer workload identity (IRSA, EKS Pod Identity, GitHub OIDC) and use no IAM access keys. Self-managed EC2 instances require IMDSv2 with a hop limit of 1.
 - Name the kubeconfig context and namespace explicitly in every `kubectl` and `helm` command.
 - Destructive drills (stopping nodes, killing primaries, dropping tables) run only against the lab clusters and are announced before they run.
 
 ## Ownership
 
-- Terraform owns machines and cloud resources. Ansible owns node configuration and kubeadm. After bootstrap, Argo CD (local and hybrid) or Flux (AWS) owns everything inside the cluster; never run two GitOps controllers on one cluster.
+- Terraform owns private machines and CloudFormation owns AWS resources. Ansible owns private node configuration and kubeadm; CloudFormation user data configures burst nodes. After bootstrap, Argo CD (private cluster) or Flux (EKS) owns everything inside the cluster; never run two GitOps controllers on one cluster.
 - Helm installs operators and infrastructure charts; Kustomize (base plus overlays) describes applications. One scaler (KEDA or HPA) per workload.
 - Render Helm and Kustomize output and validate it with kubeconform before it reaches a cluster.
 - Pin every version: charts, images (by digest for LabFlow images), tools, and GitHub Actions by full commit SHA. Check ARM64 support and current official documentation (Context7) before adopting a component.
@@ -39,18 +39,18 @@ LabFlow Platform is a public Platform Engineering/SRE learning lab: a self-manag
 Create directories when their plan day needs them:
 
 ```text
-terraform/local/   libvirt VMs inside the Lima hypervisor VM
-terraform/aws/     VPC, EC2, IAM, S3, SNS, SQS, budget
+terraform/         libvirt VMs inside the Lima hypervisor VM
+cloudformation/    AWS stacks: baseline (retained), network, cluster, data, messaging, hybrid
 ansible/           node preparation, kubeadm, CNI, WireGuard
 deploy/            Helm values and Kustomize bases/overlays
-clusters/local/    Argo CD applications (local and hybrid)
+clusters/private/  Argo CD applications (private and hybrid)
 clusters/aws/      Flux kustomizations
 docs/              plan, decisions, runbooks/, interview/, assets/
 ```
 
 ## Quality Gates
 
-Add hooks with the first files of each type: `terraform fmt`/`validate` and tflint, ansible-lint, `helm lint` and kubeconform.
+Add hooks with the first files of each type: `terraform fmt`/`validate` and tflint, cfn-lint and cfn-guard, ansible-lint, `helm lint` and kubeconform.
 
 ## Documentation
 
