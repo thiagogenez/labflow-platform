@@ -1,0 +1,33 @@
+name: Spike
+description: Time-boxed investigation that ends in a decision.
+labels: ["type: spike"]
+body:
+  - type: markdown
+    attributes:
+      value: This repository is public. Redact tokens, account IDs and personal data.
+  - type: textarea
+    attributes:
+      label: Question
+      description: The decision this investigation must enable.
+    validations:
+      required: true
+  - type: input
+    attributes:
+      label: Time box
+      placeholder: 2 hours
+    validations:
+      required: true
+  - type: textarea
+    attributes:
+      label: Options
+    validations:
+      required: true
+  - type: textarea
+    attributes:
+      label: Decision criteria
+    validations:
+      required: true
+  - type: textarea
+    attributes:
+      label: Outcome
+      description: Filled in when the time box ends; record the decision in docs/decisions.md.
