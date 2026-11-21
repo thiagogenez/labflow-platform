@@ -21,7 +21,7 @@ Planning is complete; implementation starts on 2026-11-20. This table is the sou
 | Data services (CloudNativePG, Valkey) | Planned |
 | Message brokers (Kafka, RabbitMQ, SNS + SQS) | Planned |
 | GitOps (Argo CD private/hybrid, Flux on EKS) | Planned |
-| Secrets and identity (Vault, External Secrets, RBAC personas, IRSA, Pod Identity) | Planned |
+| Secrets and identity (Vault, External Secrets, RBAC personas, Istio ambient mTLS, IRSA, Pod Identity) | Planned |
 | Observability (Prometheus, Grafana, SLO burn-rate alerts) | Planned |
 | Load and autoscaling (k6, KEDA) | Planned |
 | AWS scenario (CloudFormation, EKS Auto Mode, RDS, ElastiCache, SNS + SQS) | Planned |
@@ -37,7 +37,7 @@ flowchart LR
     vip --> gw[Envoy Gateway<br/>TLS, routing, rate limit]
     gw --> storefront
     gw --> order[order-api]
-    gw -. card tokenization .-> psp[(psp-simulator<br/>external)]
+    client -. card tokenization .-> psp[(psp-simulator<br/>external)]
     order -->|sync| payment[payment-api]
     order -->|sync, fallback| shipping[shipping-api]
     payment --> psp
@@ -46,6 +46,9 @@ flowchart LR
     order --> valkey[(Valkey)]
     order -->|outbox| broker{{One message broker<br/>RabbitMQ or Kafka<br/>or SNS + SQS on AWS}}
     payment -->|outbox| broker
+    inventory -->|outbox| broker
+    broker -->|refund and stock events| order
+    broker -->|refund requests| payment
     broker --> inventory
     broker --> email[email-worker]
     broker --> analytics[analytics-worker]

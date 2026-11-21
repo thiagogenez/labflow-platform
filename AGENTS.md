@@ -18,7 +18,7 @@ LabFlow Platform is a public Platform Engineering/SRE learning lab: a Kubernetes
 
 - Distinguish implemented, tested locally, tested on AWS, simulated and planned capabilities. Never invent results, traffic, uptime, scale or benchmarks.
 - A configured workflow is pending until it runs green on GitHub. Update the README status table when a capability changes state.
-- `psp-simulator` and Mailpit stand in for external systems; say so wherever they appear.
+- `psp-simulator`, `supplier-simulator` and Mailpit stand in for external systems; say so wherever they appear.
 
 ## Safety and Cost
 
