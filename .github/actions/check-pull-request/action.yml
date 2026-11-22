@@ -1,0 +1,17 @@
+# Shared: labflow also runs this action, pinned by commit SHA. Run it after a
+# checkout with fetch-depth: 0; the script reads the pull request's commits.
+name: Check pull request
+description: Checks a pull request's title, description and the issues that it and its commits reference.
+
+runs:
+  using: composite
+  steps:
+    - shell: bash
+      env:
+        PR_TITLE: ${{ github.event.pull_request.title }}
+        PR_NUMBER: ${{ github.event.pull_request.number }}
+        PR_BODY: ${{ github.event.pull_request.body }}
+        BASE_SHA: ${{ github.event.pull_request.base.sha }}
+        HEAD_SHA: ${{ github.event.pull_request.head.sha }}
+        GH_TOKEN: ${{ github.token }}
+      run: '"$GITHUB_ACTION_PATH/check_pull_request.sh"'
