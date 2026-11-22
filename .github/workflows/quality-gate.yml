@@ -43,7 +43,15 @@ jobs:
         run: make check
 
       - name: Scan the committed history for secrets
-        run: .venv/bin/pre-commit run --hook-stage manual gitleaks-history
+        run: |
+          set -o pipefail
+          log="$RUNNER_TEMP/history-scan.log"
+          .venv/bin/pre-commit run --all-files --verbose --hook-stage manual gitleaks-history | tee "$log"
+          # gitleaks exits 0 when git log fails, so require scanned commits and no error record.
+          plain=$(sed "s/$(printf '\033')\[[0-9;]*m//g" "$log")
+          grep -Eq 'INF [1-9][0-9]* commits scanned' <<<"$plain" || { echo "::error::The history scan scanned no commits."; exit 1; }
+          if grep -Eq '[AP]M ERR ' <<<"$plain"; then echo "::error::The history scan logged an error."; exit 1; fi
+          if grep -q 'leaks found:' <<<"$plain"; then echo "::error::The history scan found leaks."; exit 1; fi
 
       - name: Check pull request commit messages
         if: github.event_name == 'pull_request'

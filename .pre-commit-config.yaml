@@ -16,8 +16,8 @@ repos:
       - id: trailing-whitespace
 
   # Gitleaks scans staged changes at commit time; the quality gate, where nothing
-  # is staged, scans the history reachable from HEAD (manual stage), merge
-  # resolutions included, and ignores other fetched branches.
+  # is staged, scans only the history reachable from HEAD, merge resolutions,
+  # file-type changes and files marked binary included.
   - repo: local
     hooks:
       - id: gitleaks
@@ -30,7 +30,7 @@ repos:
         name: no secrets in the committed history
         language: golang
         additional_dependencies: *gitleaks
-        entry: gitleaks git --redact --verbose "--log-opts=--full-history --diff-merges=first-parent --diff-filter=tuxdb HEAD"
+        entry: gitleaks git --redact --verbose "--log-opts=--diff-merges=first-parent --diff-filter=uxdb --text HEAD"
         pass_filenames: false
         always_run: true
         stages: [manual]
