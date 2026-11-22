@@ -3,7 +3,7 @@
 help:
 	@printf '%s\n' \
 	  'make setup  Create the pinned tool environment and install the Git hooks' \
-	  'make check  Run every hook against all files, as CI does'
+	  'make check  Run the pre-commit-stage hooks against all files'
 
 setup:
 	uv venv --allow-existing --python "$$(cat .python-version)" .venv
