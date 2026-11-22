@@ -23,13 +23,15 @@ issue_state() {
     --jq 'if .pull_request then "A_PULL_REQUEST" else (.state | ascii_upcase) end'
 }
 
-# The title becomes the merge commit subject "<title> (#<number>)". Types and scope characters
+# The title becomes the merge commit subject "<title> (#<number>)", which the
+# commit-subject-length hook limits to 72 bytes. Types and scope characters
 # follow conventional-pre-commit v4.5.0 (conventional_pre_commit/format.py).
 max_title=$((72 - 4 - ${#PR_NUMBER}))
+title_bytes=$(printf '%s' "$PR_TITLE" | wc -c)
 if ! grep -qiE '^(build|chore|ci|docs|feat|fix|perf|refactor|revert|style|test)(\([[:alnum:]_ :,./#-]+\))?!?: .' <<<"$PR_TITLE"; then
   fail 'Title is not a Conventional Commits subject.'
-elif ((${#PR_TITLE} > max_title)); then
-  fail "Title is longer than $max_title characters, the room left before ' (#$PR_NUMBER)'."
+elif ((title_bytes > max_title)); then
+  fail "Title is longer than $max_title bytes, the room left before ' (#$PR_NUMBER)'."
 fi
 
 for section in What Verification Limitations Review Checklist; do
