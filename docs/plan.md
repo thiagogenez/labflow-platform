@@ -48,7 +48,7 @@ A day is done when its exit check was observed (not assumed), the README status 
 | Day | Focus | Exit check | Failure drill |
 | --- | --- | --- | --- |
 | 1 | Application repository: language hooks and CI jobs, all services in Docker Compose, README diagram | A storefront order produces an email in Mailpit, a stock change and an analytics row | Review the event contract |
-| 2 | The reel, live: RabbitMQ vs Kafka vs dead-letter queues; webhook chaos; shipping fallback; signed multi-arch images on GHCR; reel animation | The email worker crashes and recovers without losing or duplicating an email on either broker | Worker crash, duplicate delivery |
+| 2 | The reel, live: RabbitMQ vs Kafka vs dead-letter queues; webhook chaos; shipping fallback; signed multi-arch images on GHCR; reel animation | On either broker, the email worker recovers from a crash and delivers the email; retries reuse the `Message-ID`, the metric counts resend attempts, and Mailpit shows how many copies arrived | Worker crash, duplicate delivery |
 | 3 | Lima hypervisor with nested KVM (two-hour spike); Terraform libvirt VMs; Ansible base roles | Eight VMs reachable; a VIP answers from a client | Fallback decision if nesting fails |
 | 4 | kubeadm 1.35 HA behind the keepalived VIP; Calico; etcd encryption; audit log; VIP failover animation | Six nodes Ready; API reachable through the VIP | Kill a load balancer; stop one, then two control planes |
 | 5 | Argo CD bootstrap; a `LoadBalancer` Service left pending, then MetalLB; Envoy Gateway; cert-manager TLS; local-path | Storefront served over TLS through the gateway | Pending `LoadBalancer` explained; manual drift self-healed; bad sync rolled back through Git |
